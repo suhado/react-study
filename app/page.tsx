@@ -47,6 +47,7 @@ const TodoListItems: TodoListItem[] = [
 ];
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [todoItems, setTodoItems] = useState<TodoListItem[]>(TodoListItems);
 
   const addTodo = () => {
@@ -80,7 +81,7 @@ export default function Home() {
         <TodoWrapper>
           <TodoList>
             {todoItems.map((item) => (
-              <TodoCard key={item.id} $isDone={item.isDone}>
+              <TodoCard key={item.id} $isDone={item.isDone} onClick={() => setIsModalOpen(true)}>
                 <DeleteButtonWrapper>
                   <Image
                     src="/deleteIcon.svg"
@@ -99,6 +100,21 @@ export default function Home() {
           <AddButton onClick={addTodo}>새로운 Todo 추가</AddButton>
         </TodoWrapper>
       </Wrapper>
+
+      {isModalOpen && (
+        <ModalWrapper>
+          <Backdrop>
+            <ModalBody onClick={(e) => e.stopPropagation()}>
+              <ModalContents>할일 모달</ModalContents>
+              <ButtonWrapper>
+                <Button onClick={() => setIsModalOpen(false)}>
+                  <ButtonTextPrimary>확인</ButtonTextPrimary>
+                </Button>
+              </ButtonWrapper>
+            </ModalBody>
+          </Backdrop>
+        </ModalWrapper>
+      )}
     </MainContainer>
   );
 }
@@ -217,4 +233,74 @@ const AddButton = styled.div`
   margin-top: 10px;
 
   box-shadow: 0 -4px 4px 0 rgba(0, 0, 0, 0.1);
+`;
+
+const ModalWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 8px;
+`;
+
+const Backdrop = styled.div`
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0 16px;
+  z-index: 10000;
+`;
+
+const ModalBody = styled.div`
+  width: 358px;
+  background: #ffffff;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  text-align: center;
+`;
+
+const ModalContents = styled.div`
+  color: #0a0a0a;
+
+  font-family: Pretendard sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px; /* 128.571% */
+  letter-spacing: -0.14px;
+
+  padding: 48px 24px;
+
+  white-space: pre-line;
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  border-top: 1px solid #e2e2e2;
+`;
+
+const Button = styled.button`
+  flex: 1;
+  text-align: center;
+
+  background: none;
+  border: none;
+
+  padding: 16px;
+`;
+
+const ButtonTextPrimary = styled.div`
+  color: #0a0a0a;
+
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px; /* 125% */
+  letter-spacing: -0.16px;
 `;
