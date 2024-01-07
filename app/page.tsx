@@ -1,5 +1,7 @@
 'use client';
 import styled from 'styled-components';
+import { useState } from 'react';
+import Image from 'next/image';
 
 interface CardProps {
   $isDone: boolean;
@@ -41,34 +43,60 @@ const TodoListItems: TodoListItem[] = [
     title: '제목',
     content: '내용',
     image: '이미지'
-  },
-  {
-    id: 'idFive',
-    isDone: false,
-    title: '제목',
-    content: '내용',
-    image: '이미지'
   }
 ];
 
 export default function Home() {
+  const [todoItems, setTodoItems] = useState<TodoListItem[]>(TodoListItems);
+
+  const addTodo = () => {
+    const newTodo: TodoListItem = {
+      id: `id${Math.random().toString(36).substring(7)}`,
+      isDone: false,
+      title: '새로운 제목',
+      content: '새로운 내용',
+      image: '이미지'
+    };
+
+    setTodoItems((prevTodoItems) => [...prevTodoItems, newTodo]);
+  };
+
+  const deleteTodo = (id: string) => {
+    setTodoItems((prevTodoItems) => prevTodoItems.filter((item) => item.id !== id));
+  };
+
+  const toggleTodoStatus = (id: string) => {
+    setTodoItems((prevTodoItems) =>
+      prevTodoItems.map((item) => (item.id === id ? { ...item, isDone: !item.isDone } : item))
+    );
+  };
+
   return (
     <MainContainer>
       <Wrapper>
         <TopWrapper>
-          <Title>할 일 목록</Title>
           <Description>오늘의 할 일 목록</Description>
         </TopWrapper>
         <TodoWrapper>
           <TodoList>
-            {TodoListItems.map((item) => (
+            {todoItems.map((item) => (
               <TodoCard key={item.id} $isDone={item.isDone}>
-                <CardStatus $isDone={item.isDone} />
+                <DeleteButtonWrapper>
+                  <Image
+                    src="/deleteIcon.svg"
+                    alt="delete"
+                    width={18}
+                    height={18}
+                    onClick={() => deleteTodo(item.id)}
+                  />
+                </DeleteButtonWrapper>
+                <CardStatus $isDone={item.isDone} onClick={() => toggleTodoStatus(item.id)} />
                 <CardTitle>{item.title}</CardTitle>
                 <CardContent>{item.content}</CardContent>
               </TodoCard>
             ))}
           </TodoList>
+          <AddButton onClick={addTodo}>새로운 Todo 추가</AddButton>
         </TodoWrapper>
       </Wrapper>
     </MainContainer>
@@ -99,15 +127,6 @@ const TopWrapper = styled.div`
   gap: 12px;
 
   align-items: center;
-`;
-
-const Title = styled.div`
-  color: #35383e;
-
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 700;
-  line-height: normal;
 `;
 
 const Description = styled.div`
@@ -173,4 +192,29 @@ const CardContent = styled.div`
   font-weight: 400;
   line-height: 20px; /* 133.333% */
   letter-spacing: -0.15px;
+`;
+
+const DeleteButtonWrapper = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const AddButton = styled.div`
+  text-align: center;
+  color: #0a0a0a;
+
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 20px; /* 133.333% */
+  letter-spacing: -0.15px;
+
+  background-color: #d3e9ec;
+
+  border-radius: 8px;
+  padding: 12px;
+
+  margin-top: 10px;
+
+  box-shadow: 0 -4px 4px 0 rgba(0, 0, 0, 0.1);
 `;
