@@ -63,6 +63,7 @@ export default function Home() {
   };
 
   const deleteTodo = (id: string) => {
+    setIsModalOpen(true);
     setTodoItems((prevTodoItems) => prevTodoItems.filter((item) => item.id !== id));
   };
 
@@ -81,7 +82,7 @@ export default function Home() {
         <TodoWrapper>
           <TodoList>
             {todoItems.map((item) => (
-              <TodoCard key={item.id} $isDone={item.isDone} onClick={() => setIsModalOpen(true)}>
+              <TodoCard key={item.id} $isDone={item.isDone}>
                 <DeleteButtonWrapper>
                   <Image
                     src="/deleteIcon.svg"
@@ -105,7 +106,7 @@ export default function Home() {
         <ModalWrapper>
           <Backdrop>
             <ModalBody onClick={(e) => e.stopPropagation()}>
-              <ModalContents>할일 모달</ModalContents>
+              <ModalContents>할일이 삭제되었습니다</ModalContents>
               <ButtonWrapper>
                 <Button onClick={() => setIsModalOpen(false)}>
                   <ButtonTextPrimary>확인</ButtonTextPrimary>
